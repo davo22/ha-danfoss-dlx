@@ -1,0 +1,59 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "description": "Podaj adres IP wbudowanego serwera WWW falownika Danfoss DLX.",
+        "data": {
+          "host": "Host / adres IP"
+        }
+      }
+    },
+    "error": {
+      "cannot_connect": "Nie można połączyć się z falownikiem. Sprawdź adres IP i dostępność w sieci."
+    },
+    "abort": {
+      "already_configured": "Ten falownik jest już skonfigurowany."
+    }
+  },
+  "entity": {
+    "sensor": {
+      "power_ac": { "name": "Moc AC" },
+      "power_dc": { "name": "Moc DC" },
+      "reactive_power": { "name": "Moc bierna" },
+      "energy_today": { "name": "Energia dzisiaj" },
+      "energy_month": { "name": "Energia w tym miesiącu" },
+      "energy_year": { "name": "Energia w tym roku" },
+      "energy_total": { "name": "Energia całkowita" },
+      "peak_power_today": { "name": "Szczytowa moc dzisiaj" },
+      "dc_voltage": { "name": "Napięcie DC" },
+      "dc_current": { "name": "Prąd DC" },
+      "ac_voltage": { "name": "Napięcie AC" },
+      "ac_current": { "name": "Prąd AC" },
+      "ac_frequency": { "name": "Częstotliwość AC" },
+      "temperature": { "name": "Temperatura" },
+      "operating_hours": { "name": "Godziny pracy" },
+      "insulation_resistance": { "name": "Rezystancja izolacji" },
+      "status": {
+        "name": "Status",
+        "state": {
+          "normal": "Normalny",
+          "warning": "Ostrzeżenie",
+          "alarm": "Alarm"
+        }
+      },
+      "mode": {
+        "name": "Tryb",
+        "state": {
+          "off": "Wyłączony",
+          "sleeping": "Uśpiony",
+          "startup": "Uruchamianie",
+          "running": "Pracuje",
+          "derating": "Ograniczenie mocy",
+          "shutting_down": "Wyłączanie",
+          "shutdown": "Zatrzymany",
+          "service": "Serwis"
+        }
+      }
+    }
+  }
+}

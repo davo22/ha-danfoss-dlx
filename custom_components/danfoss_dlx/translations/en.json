@@ -1,0 +1,59 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "description": "Enter the IP address of your Danfoss DLX inverter's built-in web server.",
+        "data": {
+          "host": "Host / IP address"
+        }
+      }
+    },
+    "error": {
+      "cannot_connect": "Cannot connect to the inverter. Check the IP address and that it's reachable on your network."
+    },
+    "abort": {
+      "already_configured": "This inverter is already configured."
+    }
+  },
+  "entity": {
+    "sensor": {
+      "power_ac": { "name": "AC power" },
+      "power_dc": { "name": "DC power" },
+      "reactive_power": { "name": "Reactive power" },
+      "energy_today": { "name": "Energy today" },
+      "energy_month": { "name": "Energy this month" },
+      "energy_year": { "name": "Energy this year" },
+      "energy_total": { "name": "Energy total" },
+      "peak_power_today": { "name": "Peak power today" },
+      "dc_voltage": { "name": "DC voltage" },
+      "dc_current": { "name": "DC current" },
+      "ac_voltage": { "name": "AC voltage" },
+      "ac_current": { "name": "AC current" },
+      "ac_frequency": { "name": "AC frequency" },
+      "temperature": { "name": "Temperature" },
+      "operating_hours": { "name": "Operating hours" },
+      "insulation_resistance": { "name": "Insulation resistance" },
+      "status": {
+        "name": "Status",
+        "state": {
+          "normal": "Normal",
+          "warning": "Warning",
+          "alarm": "Alarm"
+        }
+      },
+      "mode": {
+        "name": "Mode",
+        "state": {
+          "off": "Off",
+          "sleeping": "Sleeping",
+          "startup": "Startup",
+          "running": "Running",
+          "derating": "Derating",
+          "shutting_down": "Shutting down",
+          "shutdown": "Shutdown",
+          "service": "Service"
+        }
+      }
+    }
+  }
+}
