@@ -143,6 +143,13 @@ async def _async_collect(
             if start < cutoff:
                 hourly[start] = energy
 
+        # An earlier run may have stored this day at daily resolution, as a
+        # single point at 12:00. Always emit that hour so a re-import
+        # overwrites it instead of leaving it behind as a duplicate.
+        noon = dt_util.as_utc(local_midnight + timedelta(hours=12))
+        if noon < cutoff:
+            hourly.setdefault(noon, 0.0)
+
         days_from_quarter_hour.add((day.year, day.month, day.day))
 
     # 2. Daily totals, for every month the daily log still covers.

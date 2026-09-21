@@ -13,6 +13,9 @@ _LOGGER = logging.getLogger(__name__)
 
 TIMEOUT = aiohttp.ClientTimeout(total=10)
 
+# One retry covers the inverter's broken keep-alive; see _async_rpc.
+RETRIES = 2
+
 
 class DlxApiError(Exception):
     """Raised when the inverter can't be reached or returns something unexpected."""
@@ -123,17 +126,29 @@ class DlxApiClient:
         return {item["path"]: item["value"] for item in result}
 
     async def _async_rpc(self, method: str, payload: dict[str, Any]) -> Any:
-        """POST a JSON-RPC call and return its `result` member."""
+        """POST a JSON-RPC call and return its `result` member.
+
+        The inverter's web server closes the socket after replying but never
+        says so, so a pooled connection blows up on its next use: in a rapid
+        series of requests every second one fails with ServerDisconnectedError.
+        Retrying is enough — the dead connection is discarded and the retry
+        opens a fresh one.
+        """
         url = f"{self._base}/rpc/{method}"
-        try:
-            async with self._session.post(url, json=payload, timeout=TIMEOUT) as resp:
-                if resp.status != 200:
-                    raise DlxApiError(f"HTTP {resp.status} from {url}")
-                data: dict[str, Any] = await resp.json(content_type=None)
-        except (aiohttp.ClientError, asyncio.TimeoutError) as err:
-            raise DlxApiError(f"Cannot reach {self._host}: {err}") from err
+        for attempt in range(RETRIES):
+            try:
+                async with self._session.post(url, json=payload, timeout=TIMEOUT) as resp:
+                    if resp.status != 200:
+                        raise DlxApiError(f"HTTP {resp.status} from {url}")
+                    data: dict[str, Any] = await resp.json(content_type=None)
+            except aiohttp.ServerDisconnectedError as err:
+                if attempt + 1 == RETRIES:
+                    raise DlxApiError(f"Cannot reach {self._host}: {err}") from err
+                continue
+            except (aiohttp.ClientError, asyncio.TimeoutError) as err:
+                raise DlxApiError(f"Cannot reach {self._host}: {err}") from err
 
-        if "result" not in data:
-            raise DlxApiError(f"Unexpected response: {data}")
+            if "result" not in data:
+                raise DlxApiError(f"Unexpected response: {data}")
 
-        return data["result"]
+            return data["result"]
