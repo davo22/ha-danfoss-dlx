@@ -15,6 +15,12 @@
       "already_configured": "This inverter is already configured."
     }
   },
+  "services": {
+    "import_history": {
+      "name": "Import production history",
+      "description": "Re-reads the inverter's own production log and rewrites the imported history statistics. Safe to run repeatedly; it always stops at the same cutoff, so it never overlaps the statistics recorded from the live sensors."
+    }
+  },
   "entity": {
     "sensor": {
       "power_ac": { "name": "AC power" },

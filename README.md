@@ -68,6 +68,45 @@ settings.
 For the Energy Dashboard, use **Energy total** (or **Energy today**) as a solar
 production source.
 
+## Production history
+
+The inverter keeps its own production log, and this integration imports it into
+Home Assistant's long-term statistics on first setup, so the Energy dashboard
+can show years of production that predate Home Assistant itself.
+
+Three resolutions are available from the device, and each period is taken from
+the finest one that covers it:
+
+| Source | Coverage | Imported as |
+| --- | --- | --- |
+| 15-minute samples | last ~100 days | true hourly values |
+| daily totals | current calendar year | one point per day, at 12:00 |
+| monthly totals | everything back to commissioning | one point per month, on the 15th at 12:00 |
+
+Consequently the recent months look correct at any zoom level, while older
+periods are accurate per month but appear as a single bar within that month.
+
+The history is written to a **separate statistic**
+(`danfoss_dlx:<serial>_energy_production_history`) rather than to the sensor
+entities, so the recorder's own data is never touched. It stops at local
+midnight of the day the integration was first set up, which is also when the
+live sensors start recording — the two never overlap.
+
+To see it, add **both** sources under Settings → Dashboards → Energy → Solar
+panels: the imported history statistic *and* the `Energy total` sensor. Home
+Assistant adds them together, and since they cover different periods the result
+is one continuous series.
+
+Re-run the import at any time with the `danfoss_dlx.import_history` service; it
+always stops at the same cutoff, so repeating it is safe.
+
+### Accuracy
+
+Verified against a DLX 2.9 with 12.8 years of logged history: the import totals
+20607.0 kWh against the inverter's own lifetime counter of 20608.3 kWh for the
+same period — a deviation of 0.01%, which is the rounding in the 15-minute
+samples.
+
 ## Requirements
 
 Home Assistant 2024.6.0 or newer.

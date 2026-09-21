@@ -4,6 +4,7 @@ from __future__ import annotations
 import asyncio
 import logging
 from dataclasses import dataclass
+from datetime import datetime
 from typing import Any
 
 import aiohttp
@@ -71,6 +72,38 @@ class DlxApiClient:
             return systems[0]
         raise DlxApiError("Inverter returned an empty system list")
 
+    async def async_get_power_log(
+        self,
+        system: int,
+        system_type: int,
+        start: datetime,
+        unit: str,
+        resolution: str,
+        count: int,
+    ) -> list[float]:
+        """Read the inverter's own production log.
+
+        Resolutions: "15min", "1day", "1mnd". Note that despite the "Wh" unit,
+        15min samples are an *average power in W* over each interval, so the
+        caller must multiply by 0.25 h to get energy. The 1day/1mnd resolutions
+        do return energy in kWh. Returns [] for periods outside the log.
+        """
+        payload = {
+            "jsonrpc": "2.0",
+            "method": "GetPowerLog",
+            "params": [
+                system_type,
+                system,
+                start.strftime("%Y-%m-%d %H:%M:%S"),
+                unit,
+                resolution,
+                count,
+            ],
+            "id": 0,
+        }
+        result = await self._async_rpc("GetPowerLog", payload)
+        return result.get("Values", [])
+
     async def async_read(
         self, points: list[tuple[str, str]]
     ) -> dict[str, str]:
@@ -80,13 +113,18 @@ class DlxApiClient:
         [("eNEXUS_0010[s:1,t:17]", "INT16U"), ...].
         Returns a dict of path -> raw string value.
         """
-        url = f"{self._base}/rpc/GeteNexusData"
         payload = {
             "jsonrpc": "2.0",
             "method": "GeteNexusData",
             "params": [{"path": path, "datatype": datatype} for path, datatype in points],
             "id": 0,
         }
+        result = await self._async_rpc("GeteNexusData", payload)
+        return {item["path"]: item["value"] for item in result}
+
+    async def _async_rpc(self, method: str, payload: dict[str, Any]) -> Any:
+        """POST a JSON-RPC call and return its `result` member."""
+        url = f"{self._base}/rpc/{method}"
         try:
             async with self._session.post(url, json=payload, timeout=TIMEOUT) as resp:
                 if resp.status != 200:
@@ -98,4 +136,4 @@ class DlxApiClient:
         if "result" not in data:
             raise DlxApiError(f"Unexpected response: {data}")
 
-        return {item["path"]: item["value"] for item in data["result"]}
+        return data["result"]

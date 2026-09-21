@@ -19,6 +19,9 @@ DOMAIN = "danfoss_dlx"
 
 DEFAULT_SCAN_INTERVAL = 30  # seconds
 
+CONF_HISTORY_CUTOFF = "history_cutoff"
+SERVICE_IMPORT_HISTORY = "import_history"
+
 # The inverter's built-in "Theia" web server exposes data points as
 # eNEXUS_xxxx[s:<system>,t:<systemType>] paths, read in a single batched
 # JSON-RPC call to /rpc/GeteNexusData. system/systemType identify which

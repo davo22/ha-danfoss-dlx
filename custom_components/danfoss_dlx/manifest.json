@@ -3,6 +3,7 @@
   "name": "Danfoss DLX Solar Inverter",
   "codeowners": [],
   "config_flow": true,
+  "dependencies": ["recorder"],
   "documentation": "https://github.com/davo22/ha-danfoss-dlx",
   "issue_tracker": "https://github.com/davo22/ha-danfoss-dlx/issues",
   "integration_type": "device",
