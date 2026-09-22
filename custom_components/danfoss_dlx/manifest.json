@@ -1,7 +1,7 @@
 {
   "domain": "danfoss_dlx",
   "name": "Danfoss DLX Solar Inverter",
-  "codeowners": [],
+  "codeowners": ["@davo22"],
   "config_flow": true,
   "dependencies": ["recorder"],
   "documentation": "https://github.com/davo22/ha-danfoss-dlx",
@@ -9,5 +9,5 @@
   "integration_type": "device",
   "iot_class": "local_polling",
   "requirements": [],
-  "version": "0.1.0"
+  "version": "1.0.0"
 }
