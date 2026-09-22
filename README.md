@@ -115,8 +115,8 @@ Home Assistant 2025.8.0 or newer (the statistics import uses `StatisticMeanType`
 
 ## License
 
-[0BSD](LICENSE) — use it, change it, ship it, no conditions attached and no
-attribution required.
+[MIT](LICENSE) © Dawid Rashid — use it, change it, ship it; just keep the
+copyright notice.
 
 ## Notes
 
