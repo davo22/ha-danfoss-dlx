@@ -113,6 +113,11 @@ samples.
 
 Home Assistant 2025.8.0 or newer (the statistics import uses `StatisticMeanType`).
 
+## License
+
+[0BSD](LICENSE) — use it, change it, ship it, no conditions attached and no
+attribution required.
+
 ## Notes
 
 - All values are read-only. The integration never writes to the inverter.
