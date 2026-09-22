@@ -98,7 +98,9 @@ Assistant adds them together, and since they cover different periods the result
 is one continuous series.
 
 Re-run the import at any time with the `danfoss_dlx.import_history` service; it
-always stops at the same cutoff, so repeating it is safe.
+always stops at the same cutoff, so repeating it is safe. When an update changes
+what the import produces, the integration re-imports by itself on the next
+restart, so a fix to the import logic also repairs data already in the database.
 
 ### Accuracy
 
@@ -109,7 +111,7 @@ samples.
 
 ## Requirements
 
-Home Assistant 2024.6.0 or newer.
+Home Assistant 2025.8.0 or newer (the statistics import uses `StatisticMeanType`).
 
 ## Notes
 

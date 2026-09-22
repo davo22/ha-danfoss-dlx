@@ -10,7 +10,13 @@ from homeassistant.helpers.aiohttp_client import async_get_clientsession
 from homeassistant.util import dt as dt_util
 
 from .api import DlxApiClient, DlxSystemInfo
-from .const import CONF_HISTORY_CUTOFF, DOMAIN, SERVICE_IMPORT_HISTORY
+from .const import (
+    CONF_HISTORY_CUTOFF,
+    CONF_IMPORT_VERSION,
+    DOMAIN,
+    IMPORT_VERSION,
+    SERVICE_IMPORT_HISTORY,
+)
 from .coordinator import DlxDataUpdateCoordinator
 from .statistics import async_has_history, async_import_history, build_statistic_id
 
@@ -41,7 +47,8 @@ async def async_setup_entry(hass: HomeAssistant, entry: DlxConfigEntry) -> bool:
 
     _async_register_services(hass)
 
-    if not await async_has_history(hass, build_statistic_id(system_info)):
+    outdated = entry.data.get(CONF_IMPORT_VERSION) != IMPORT_VERSION
+    if outdated or not await async_has_history(hass, build_statistic_id(system_info)):
         entry.async_create_background_task(
             hass,
             _async_import(hass, entry, client, system_info),
@@ -80,6 +87,11 @@ async def _async_import(
         await async_import_history(hass, client, system_info, cutoff)
     except Exception:  # noqa: BLE001 - background task must not die silently
         _LOGGER.exception("Importing history from %s failed", entry.data[CONF_HOST])
+        return
+
+    hass.config_entries.async_update_entry(
+        entry, data={**entry.data, CONF_IMPORT_VERSION: IMPORT_VERSION}
+    )
 
 
 def _async_register_services(hass: HomeAssistant) -> None:

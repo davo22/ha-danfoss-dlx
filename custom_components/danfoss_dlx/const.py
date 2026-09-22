@@ -20,7 +20,12 @@ DOMAIN = "danfoss_dlx"
 DEFAULT_SCAN_INTERVAL = 30  # seconds
 
 CONF_HISTORY_CUTOFF = "history_cutoff"
+CONF_IMPORT_VERSION = "import_version"
 SERVICE_IMPORT_HISTORY = "import_history"
+
+# Bumped whenever a fix changes what the history import produces, so existing
+# installations re-import instead of keeping data from a buggy earlier run.
+IMPORT_VERSION = 2
 
 # The inverter's built-in "Theia" web server exposes data points as
 # eNEXUS_xxxx[s:<system>,t:<systemType>] paths, read in a single batched
